@@ -32,8 +32,43 @@
 #define GPIOB_BASEADDR		(AHB1PERI_BASEADDR + 0x0400)
 #define GPIOC_BASEADDR		(AHB1PERI_BASEADDR + 0x0800)
 #define GPIOH_BASEADDR		(AHB1PERI_BASEADDR + 0x0C00)
+
+/*
+ * RCC (AHB1 peripheral)
+ */
+
 #define RCC_BASEADDR		(AHB1PERI_BASEADDR + 0x1000)
 
+/*
+ * I2C (APB1 peripheral)
+ */
+
+#define I2C1_BASEADDR		(APB1PERI_BASEADDR + 0x5400)
+#define I2C2_BASEADDR		(APB1PERI_BASEADDR + 0x5800)
+#define I2C4_BASEADDR		(APB1PERI_BASEADDR + 0x6000)
+
+/*
+ * USART (APB1 AND APB2 peripheral)
+ */
+
+#define USART1_BASEADDR		(APB2PERI_BASEADDR + 0x1000)	
+#define USART2_BASEADDR		(APB1PERI_BASEADDR + 0x4400)	
+#define USART6_BASEADDR		(APB2PERI_BASEADDR + 0x1400)	
+
+/*
+ * SPI (APB1 and ABP2 peripheral)
+ */
+
+#define SPI1_BASEADDR		(APB2PERI_BASEADDR + 0x3000)
+#define SPI2_BASEADDR		(APB1PERI_BASEADDR + 0x3800)
+#define SPI3_BASEADDR		(APB1PERI_BASEADDR + 0x3C00)
+#define SPI5_BASEADDR		(APB2PERI_BASEADDR + 0x5000)
+
+/*
+ * EXTI (ABP2 PERIPHERAL)
+ */
+
+#define EXTI_BASEADDR		(APB2PERI_BASEADDR + 0x3C00)
 
 /******************************************************************
  * peripheral data structures
@@ -94,6 +129,12 @@ typedef struct {
  */
 
 /*
+ * RCC
+ */
+
+#define RCC			(RCC_RegDef_t *) RCC_BASEADDR
+
+/*
  * GPIO
  */
 
@@ -116,3 +157,52 @@ typedef struct {
 #define GPIOB_REG_RESET()     do{ (RCC->AHB1RSTR |= (1 << 1)); (RCC->AHB1RSTR &= ~(1 << 1)); }while(0)
 #define GPIOC_REG_RESET()     do{ (RCC->AHB1RSTR |= (1 << 2)); (RCC->AHB1RSTR &= ~(1 << 2)); }while(0)
 #define GPIOH_REG_RESET()     do{ (RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR &= ~(1 << 7)); }while(0)
+
+/*
+ * I2C
+ */
+
+#define I2C1_PCLK_EN()		(RCC -> APB1ENR |= (1 << 21))
+#define I2C2_PCLK_EN()		(RCC -> APB1ENR |= (1 << 22))
+#define I2C4_PCLK_EN()		(RCC -> APB1ENR |= (1 << 24))
+
+#define I2C1_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 21)))
+#define I2C2_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 22)))
+#define I2C4_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 24)))
+
+/*
+ * USART
+ */
+
+#define USART1_PCLK_EN()	(RCC -> APB2ENR |= (1 << 4))
+#define USART2_PCLK_EN()	(RCC -> APB1ENR |= (1 << 17))
+#define USART6_PCLK_EN()	(RCC -> APB2ENR |= (1 << 5))
+
+#define USART1_PCLK_DI()	(RCC -> APB2ENR &= (~(1 << 4)))
+#define USART2_PCLK_DI()	(RCC -> APB1ENR &= (~(1 << 17)))
+#define USART6_PCLK_DI()	(RCC -> APB2ENR &= (~(1 << 5)))
+
+/*
+ * SPI
+ */
+
+#define SPI1_PCLK_EN()		(RCC -> APB2ENR |= (1 << 12))
+#define SPI2_PCLK_EN()		(RCC -> APB1ENR |= (1 << 14))
+#define SPI3_PCLK_EN()		(RCC -> APB1ENR |= (1 << 15))
+#define SPI5_PCLK_EN()		(RCC -> APB2ENR |= (1 << 20))
+	
+#define SPI1_PCLK_DI()		(RCC -> APB2ENR &= (~(1 << 12)))
+#define SPI2_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 14)))
+#define SPI3_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 15)))
+#define SPI5_PCLK_DI()		(RCC -> APB2ENR &= (~(1 << 20)))
+
+/*
+ * Misc
+ */
+
+#define ENABLE			1
+#define DISABLE			0
+#define SET			ENABLE
+#define RESET			DISABLE
+#define GPIO_PIN_SET		SET
+#define GPIO_PIN_RESET		RESET
