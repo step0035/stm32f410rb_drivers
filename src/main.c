@@ -1,5 +1,6 @@
-#include "stm32f410rb.h"
+#include "driver_gpio.h"
 
 int main(void) {
-	while(1);
+	GPIO_Handle_t GpioLed;
+	return  0;	
 }
