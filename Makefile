@@ -4,7 +4,7 @@ DRIVERDIR = $(BASEDIR)/drivers
 
 SRCALL += $(wildcard $(SRCDIR)/*.c)
 SRCALL_O = $(patsubst %.c, %.o, $(SRC))
-SRCGPIO = $(SRCDIR)/main.c
+SRCGPIO = $(SRCDIR)/gpio_led_toggle.c
 SRCGPIO_O = $(patsubst %.c, %.o, $(SRCGPIO))
 
 LIBSRC += $(wildcard $(DRIVERDIR)/src/*.c)
