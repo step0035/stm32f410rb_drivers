@@ -39,6 +39,9 @@ $(SRCGPIO_O): $(SRCGPIO)
 startup.o: startup.c
 	$(CC) $(CFLAGS) -o $@ $^
 
+load:
+	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+
 clean:
 	rm -rf $(wildcard $(SRCDIR)/*.o)
 	rm -rf $(wildcard $(DRIVERDIR)/src/*.o)
