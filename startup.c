@@ -6,12 +6,22 @@
 
 #define STACK_START	SRAM_END
 
+extern uint32_t _etext;
+extern uint32_t _sdata;
+extern uint32_t _edata;
+extern uint32_t _sbss;
+extern uint32_t _ebss;
+
+int main(void);
+
 void Reset_Handler(void);
+void Default_Handler(void);
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void HardFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void MemManage_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void BusFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void UsageFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void SVCall_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void Systick_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -35,7 +45,7 @@ void DMA1_Stream5_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA1_Stream6_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void ADC_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI9_5_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM1_BRK_TIM9 _Handler(void) __attribute__((weak, alias("Default_Handler")));
+void TIM1_BRK_TIM9_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM1_UP_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM1_TRG_COM_TIM11_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM1_CC_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -57,8 +67,10 @@ void DMA2_Stream1_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream2_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream3_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream4_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void EXTI19_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream5_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream6_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void DMA2_Stream7_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void USART6_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI20_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void RNG_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -183,12 +195,32 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
 	(uint32_t) &I2C4_EV_Handler,
 	(uint32_t) &I2C4_ER_Handler,
 	(uint32_t) &LPTIM1_Handler,
-}
+};
 
 void Default_Handler(void) {
 	while(1);
 }
 
 void Reset_Handler(void) {
+	//copy .data section to SRAM
+        uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata;
 
+        uint8_t *pDst = (uint8_t*)&_sdata; //sram
+        uint8_t *pSrc = (uint8_t*)&_etext; //flash
+
+        for(uint32_t i =0 ; i < size ; i++)
+        {
+                *pDst++ = *pSrc++;
+        }
+
+        //Init. the .bss section to zero in SRAM
+        size = (uint32_t)&_ebss - (uint32_t)&_sbss;
+        pDst = (uint8_t*)&_sbss;
+        for(uint32_t i =0 ; i < size ; i++)
+        {
+                *pDst++ = 0;
+        }
+	
+	//call main()
+        main();
 }

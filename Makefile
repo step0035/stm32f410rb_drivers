@@ -1,3 +1,7 @@
+MACH = cortex-m4
+CFLAGS = -c -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -o0 -Wall
+LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft -nostdlib -T linker.ld -Wl,-Map=memory.map
+
 BASEDIR = $(shell pwd)
 SRCDIR = $(BASEDIR)/src
 DRIVERDIR = $(BASEDIR)/drivers
@@ -16,22 +20,30 @@ AR = $(CROSS_COMPILE)ar
 CC = $(CROSS_COMPILE)gcc
 AS = $(CROSS_COMPILE)as
 NM = $(CROSS_COMPILE)nm
-LD = $(CROSS_COMPILE)ld
+LD = $(CROSS_COMPILE)gcc
 GDB = $(CROSS_COMPILE)gdb
 OBJCOPY = $(CROSS_COMPILE)objcopy
 OBJDUMP = $(CROSS_COMPILE)objdump
 
-GPIO: $(SRCGPIO_O) $(LIBSRC_O)
-# TO DO: make gpio elf
+GPIO: gpio_led_toggle.elf
+
+gpio_led_toggle.elf: $(LIBSRC_O) $(SRCGPIO_O) startup.o
+	$(LD) $(LDFLAGS) -o $@ $^
 
 $(LIBSRC_O): $(LIBSRC)
-	$(CC) -c -o $@ $^ $(LIBINC)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
 $(SRCGPIO_O): $(SRCGPIO)
-	$(CC) -c -o $@ $^ $(LIBINC)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
+
+startup.o: startup.c
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(wildcard $(SRCDIR)/*.o)
 	rm -rf $(wildcard $(DRIVERDIR)/src/*.o)
+	rm -rf $(wildcard *.o)
+	rm -rf $(wildcard *.elf)
+	rm -rf $(wildcard *.map)
 
 .PHONY: GPIO clean
