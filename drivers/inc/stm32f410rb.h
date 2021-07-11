@@ -39,7 +39,7 @@
  * RCC (AHB1 peripheral)
  */
 
-#define RCC_BASEADDR		(AHB1PERI_BASEADDR + 0x1000)
+#define RCC_BASEADDR		(AHB1PERI_BASEADDR + 0x3800)
 
 /*
  * I2C (APB1 peripheral)
