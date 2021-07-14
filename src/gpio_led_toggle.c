@@ -10,7 +10,7 @@ int main(void) {
 	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_5;
 	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
 	GpioLed.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
-	GpioLed.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
+	GpioLed.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
 	GpioLed.GPIO_PinConfig.GPIO_PinOPType = GPIO_NO_PUPD;
 
 	GPIO_PeriClkCtl(GpioLed.pGPIOx, ENABLE);

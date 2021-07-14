@@ -6,14 +6,13 @@ BASEDIR = $(shell pwd)
 SRCDIR = $(BASEDIR)/src
 DRIVERDIR = $(BASEDIR)/drivers
 
-SRCALL += $(wildcard $(SRCDIR)/*.c)
-SRCALL_O = $(patsubst %.c, %.o, $(SRC))
-SRCGPIO = $(SRCDIR)/gpio_led_toggle.c
-SRCGPIO_O = $(patsubst %.c, %.o, $(SRCGPIO))
-
 LIBSRC += $(wildcard $(DRIVERDIR)/src/*.c)
 LIBSRC_O = $(patsubst %.c, %.o, $(LIBSRC))
 LIBINC += -I $(DRIVERDIR)/inc/ 
+
+SRC += $(wildcard $(SRCDIR)/*.c)
+SRC_O = $(patsubst %.c, %.o, $(SRC))
+SRC_ELF = $(patsubst %.c, %.elf, $(SRC))
 
 CROSS_COMPILE = arm-none-eabi-
 AR = $(CROSS_COMPILE)ar
@@ -25,15 +24,15 @@ GDB = $(CROSS_COMPILE)gdb
 OBJCOPY = $(CROSS_COMPILE)objcopy
 OBJDUMP = $(CROSS_COMPILE)objdump
 
-GPIO: gpio_led_toggle.elf
+all: $(SRC_ELF)
 
-gpio_led_toggle.elf: $(LIBSRC_O) $(SRCGPIO_O) startup.o
+%.elf: $(LIBSRC_O) %.o startup.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
-$(LIBSRC_O): $(LIBSRC)
+%.o: %.c 
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
-$(SRCGPIO_O): $(SRCGPIO)
+$(LIBSRC_O): $(LIBSRC)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
 startup.o: startup.c
@@ -46,7 +45,8 @@ clean:
 	rm -rf $(wildcard $(SRCDIR)/*.o)
 	rm -rf $(wildcard $(DRIVERDIR)/src/*.o)
 	rm -rf $(wildcard *.o)
+	rm -rf $(wildcard $(SRCDIR)/*.elf)
 	rm -rf $(wildcard *.elf)
 	rm -rf $(wildcard *.map)
 
-.PHONY: GPIO clean
+.PHONY: all load clean

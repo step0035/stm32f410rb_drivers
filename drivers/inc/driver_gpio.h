@@ -67,7 +67,7 @@ void GPIO_IRQHandling(uint8_t PinNumber);
  * GPIO modes
  */
 
-#define GPIO_MODE_IP		0
+#define GPIO_MODE_IN		0
 #define GPIO_MODE_OUT		1
 #define GPIO_MODE_ALTFN		2
 #define GPIO_MODE_ANALOG	3
