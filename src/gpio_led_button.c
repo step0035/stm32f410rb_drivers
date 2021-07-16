@@ -5,7 +5,7 @@
 #define BTN_PRESSED	HIGH
 
 void delay(void) {
-	for(uint32_t i = 0; i < 500000; i++);
+	for(uint32_t i = 0; i < 100000; i++);
 }
 
 int main(void) {
@@ -31,7 +31,7 @@ int main(void) {
 	GPIO_Init(&GpioBtn);	
 
 	while(1) {
-		if(GPIO_ReadInputPin(GpioBtn.pGPIOx, GPIO_PIN_13) == BTN_PRESSED) {
+		if(GPIO_ReadInputPin(GpioBtn.pGPIOx, GPIO_PIN_13) != BTN_PRESSED) {
 			delay();
 			GPIO_WriteOutputPin(GpioLed.pGPIOx, GPIO_PIN_5, HIGH);
 		}

@@ -1,6 +1,6 @@
 MACH = cortex-m4
 CFLAGS = -c -g -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -o0 -Wall
-LDFLAGS= -mcpu=$(MACH) -mthumb -mfloat-abi=soft -nostdlib -T linker.ld -Wl,-Map=memory.map
+LDFLAGS= -g -mcpu=$(MACH) -mthumb -mfloat-abi=soft -nostdlib -T linker.ld -Wl,-Map=memory.map
 
 BASEDIR = $(shell pwd)
 SRCDIR = $(BASEDIR)/src
