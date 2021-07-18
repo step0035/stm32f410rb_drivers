@@ -8,6 +8,32 @@
 #include <stdint.h>
 
 /*
+ * NVIC registers
+ */
+
+#define NVIC_ISER0		((volatile uint32_t*) 0xE000E100)
+#define NVIC_ISER1		((volatile uint32_t*) 0xE000E104)
+#define NVIC_ISER2		((volatile uint32_t*) 0xE000E108)
+#define NVIC_ISER3		((volatile uint32_t*) 0xE000E10C)
+#define NVIC_ISER4		((volatile uint32_t*) 0xE000E110)
+#define NVIC_ISER5		((volatile uint32_t*) 0xE000E114)
+#define NVIC_ISER6		((volatile uint32_t*) 0xE000E118)
+#define NVIC_ISER7		((volatile uint32_t*) 0xE000E11C)
+
+#define NVIC_ICER0		((volatile uint32_t*) 0xE000E180)
+#define NVIC_ICER1		((volatile uint32_t*) 0xE000E184)
+#define NVIC_ICER2		((volatile uint32_t*) 0xE000E188)
+#define NVIC_ICER3		((volatile uint32_t*) 0xE000E18C)
+#define NVIC_ICER4		((volatile uint32_t*) 0xE000E190)
+#define NVIC_ICER5		((volatile uint32_t*) 0xE000E194)
+#define NVIC_ICER6		((volatile uint32_t*) 0xE000E198)
+#define NVIC_ICER7		((volatile uint32_t*) 0xE000E19C)
+
+#define NVIC_PR_BASE_ADDR	((volatile uint32_t*) 0xE000E400)
+
+#define NO_PR_BITS_IMPLEMENTED	4
+
+/*
  * FLASH and SRAM
  */
 
@@ -71,6 +97,7 @@
  */
 
 #define EXTI_BASEADDR		(APB2PERI_BASEADDR + 0x3C00)
+#define SYSCFG_BASEADDR		(APB2PERI_BASEADDR + 0x3800)
 
 /******************************************************************
  * peripheral data structures
@@ -126,15 +153,40 @@ typedef struct {
     volatile uint32_t DCKCFGR2;
 } RCC_RegDef_t;
 
+typedef struct {
+	volatile uint32_t IMR;
+	volatile uint32_t EMR; 
+	volatile uint32_t RTSR;
+	volatile uint32_t FTSR; 
+	volatile uint32_t SWIER; 
+	volatile uint32_t PR;
+} EXTI_RegDef_t;
+
+typedef struct {
+	volatile uint32_t MEMRMP;
+	volatile uint32_t PMC;
+	volatile uint32_t EXTICR[4];
+	volatile uint32_t RESERVED1[2];
+	volatile uint32_t CMPCR;
+	volatile uint32_t CFGR;
+} SYSCFG_RegDef_t;
+
 /**************************************************
  * Definitions
  */
 
 /*
- * RCC
+ * RCC, EXTI, SYSCFG
  */
 
-#define RCC			((RCC_RegDef_t *) RCC_BASEADDR)
+#define RCC			((RCC_RegDef_t*) RCC_BASEADDR)
+#define EXTI			((EXTI_RegDef_t*) EXTI_BASEADDR)
+#define SYSCFG			((SYSCFG_RegDef_t*) SYSCFG_BASEADDR)
+/* 
+ * SYSCFG
+ */
+
+#define SYSCFG_PCLK_EN()	(RCC->APB2ENR |= (1 << 14))
 
 /*
  * GPIO
@@ -159,6 +211,12 @@ typedef struct {
 #define GPIOB_REG_RESET()     do{ (RCC->AHB1RSTR |= (1 << 1)); (RCC->AHB1RSTR &= ~(1 << 1)); }while(0)
 #define GPIOC_REG_RESET()     do{ (RCC->AHB1RSTR |= (1 << 2)); (RCC->AHB1RSTR &= ~(1 << 2)); }while(0)
 #define GPIOH_REG_RESET()     do{ (RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR &= ~(1 << 7)); }while(0)
+
+#define GPIO_BASEADDR_TO_CODE(x)	((x == GPIOA) ?0:\
+					 (x == GPIOB) ?1:\
+					 (x == GPIOC) ?2:\
+					 (x == GPIOH) ?3:0)
+
 
 /*
  * I2C
@@ -197,6 +255,21 @@ typedef struct {
 #define SPI2_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 14)))
 #define SPI3_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 15)))
 #define SPI5_PCLK_DI()		(RCC -> APB2ENR &= (~(1 << 20)))
+
+/*
+ * IRQ numbers
+ */
+
+#define IRQ_NO_EXTI0		(6)
+#define IRQ_NO_EXTI1		(7)
+#define IRQ_NO_EXTI2		(8)
+#define IRQ_NO_EXTI3		(9)
+#define IRQ_NO_EXTI4		(10)
+#define IRQ_NO_EXTI9_5		(23)
+#define IRQ_NO_EXTI15_10	(40)
+#define IRQ_NO_EXTI19		(62)
+#define IRQ_NO_EXTI20		(76)
+#define IRQ_NO_EXTI23		(97)
 
 /*
  * Misc
