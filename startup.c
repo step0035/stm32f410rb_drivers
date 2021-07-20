@@ -13,6 +13,7 @@ extern uint32_t _sbss;
 extern uint32_t _ebss;
 
 int main(void);
+void __libc_init_array(void);
 
 void Reset_Handler(void);
 void Default_Handler(void);
@@ -221,6 +222,7 @@ void Reset_Handler(void) {
                 *pDst++ = 0;
         }
 	
+	__libc_init_array();
 	//call main()
         main();
 }

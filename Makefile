@@ -1,6 +1,6 @@
 MACH = cortex-m4
 CFLAGS = -c -g -mcpu=$(MACH) -mthumb -mfloat-abi=soft -std=gnu11 -o0 -Wall
-LDFLAGS= -g -mcpu=$(MACH) -mthumb -mfloat-abi=soft -nostdlib -T linker.ld -Wl,-Map=memory.map
+LDFLAGS= -g -mcpu=$(MACH) -mthumb -mfloat-abi=soft --specs=nano.specs -T linker.ld -Wl,-Map=memory.map
 
 BASEDIR = $(shell pwd)
 SRCDIR = $(BASEDIR)/src
@@ -26,7 +26,7 @@ OBJDUMP = $(CROSS_COMPILE)objdump
 
 all: $(SRC_ELF)
 
-%.elf: $(LIBSRC_O) %.o startup.o
+%.elf: $(LIBSRC_O) %.o startup.o syscalls.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o: %.c 
@@ -36,6 +36,9 @@ $(LIBSRC_O): $(LIBSRC)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
 startup.o: startup.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+syscalls.o: syscalls.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 load:
