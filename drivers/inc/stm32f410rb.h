@@ -153,6 +153,10 @@ typedef struct {
     volatile uint32_t DCKCFGR2;
 } RCC_RegDef_t;
 
+/*
+ * EXTI
+ */
+
 typedef struct {
 	volatile uint32_t IMR;
 	volatile uint32_t EMR; 
@@ -161,6 +165,10 @@ typedef struct {
 	volatile uint32_t SWIER; 
 	volatile uint32_t PR;
 } EXTI_RegDef_t;
+
+/*
+ * SYSCFG
+ */
 
 typedef struct {
 	volatile uint32_t MEMRMP;
@@ -171,6 +179,21 @@ typedef struct {
 	volatile uint32_t CFGR;
 } SYSCFG_RegDef_t;
 
+/*
+ * SPI
+ */
+
+typedef struct {
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
+	volatile uint32_t SR;
+	volatile uint32_t DR;
+	volatile uint32_t CRCPR;
+	volatile uint32_t RXCRCR;
+	volatile uint32_t TXCRCR;
+	volatile uint32_t I2SCFGR;
+	volatile uint32_t I2SPR;
+} SPI_RegDef_t;
 /**************************************************
  * Definitions
  */
@@ -245,6 +268,11 @@ typedef struct {
 /*
  * SPI
  */
+
+#define SPI1			((SPI_RegDef_t*) SPI1_BASEADDR)
+#define SPI2			((SPI_RegDef_t*) SPI2_BASEADDR)
+#define SPI3			((SPI_RegDef_t*) SPI3_BASEADDR)
+#define SPI5			((SPI_RegDef_t*) SPI5_BASEADDR)
 
 #define SPI1_PCLK_EN()		(RCC -> APB2ENR |= (1 << 12))
 #define SPI2_PCLK_EN()		(RCC -> APB1ENR |= (1 << 14))
