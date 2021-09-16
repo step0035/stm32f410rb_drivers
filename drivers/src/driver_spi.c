@@ -63,73 +63,36 @@ void SPI_PeriClkCtl(SPI_RegDef_t *pSPIx, uint8_t ENorDI) {
  */
 
 void SPI_Init(SPI_Handle_t *pSPIHandle) {
-	uint32_t temp = 0;
+	uint32_t tempreg = 0;
 
-	// configure pin mode
-	if(pGPIOHandle -> GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) {
-		// non interrupt mode
-		temp = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinMode) << (2 * ( pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber));
-		pGPIOHandle -> pGPIOx -> MODER &= ~(0x3 << (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber));
-		pGPIOHandle -> pGPIOx -> MODER |= temp;
+	// configure device mode
+    tempreg |= pSPIHandle->SPI_Config.SPI_DeviceMode << 2;
 
-	}
-	
-	else {
-		// interrupt mode	
-		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT) {
-			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-			EXTI->RTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-		}
-		else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT) {
-			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-			EXTI->FTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-		}
-		else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RFT) {
-			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-		}
-		uint8_t temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;		
-		uint8_t temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;		
-		uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
-		SYSCFG_PCLK_EN();
-		SYSCFG->EXTICR[temp1] = portcode << (4 * temp2);
+    // configure bus config
+    if (pSPIHandle->SPI_Config.SPI_BusConfig == SPI_BUS_CONFIG_FD) {
+        tempreg &= ~(1 << 15); // clear BIDI
+    }
+    else if (pSPIHandle->SPI_Config.SPI_BusConfig == SPI_BUS_CONFIG_HD) {
+        tempreg |= (1 << 15); // set BIDI
+    }
+    else if (pSPIHandle->SPI_Config.SPI_BusConfig == SPI_BUS_CONFIG_SIMPLEX_RXONLY) {
+        tempreg &= ~(1 << 15); // clear BIDI
+        tempreg |= (1 << 10); // set RXONLY
+    }
 
-		EXTI->IMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-	}	
+    // configure spi serial clock speed (baud rate)
+    tempreg |= pSPIHandle->SPI_Config.SPI_SclkSpeed << 3;
 
-	temp = 0;
+    // configure DFF
+    tempreg |= pSPIHandle->SPI_Config.SPI_DFF << 3;
 
-	// configure pin speed
-	temp = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinSpeed) << (2 * pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber);
-	pGPIOHandle -> pGPIOx -> OSPEEDR &= ~(0x3 << (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber));
-	pGPIOHandle -> pGPIOx -> OSPEEDR |= temp;
+    // configure CPOL
+    tempreg |= pSPIHandle->SPI_Config.SPI_CPOL << 1;
 
-	temp = 0;
+    // configure CPHA
+    tempreg |= pSPIHandle->SPI_Config.SPI_CPHA << SPI_CR1_CPHA;
 
-	// configure pin pull up pull down	
-	temp = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinPuPdControl) << (2 * pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber);
-	pGPIOHandle -> pGPIOx -> PUPDR &= ~(0x3 << (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber));
-	pGPIOHandle -> pGPIOx -> PUPDR |= temp;
-
-	temp = 0;
-
-	// configure pin output type
-	temp = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinOPType) << (1 * pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber);
-	pGPIOHandle -> pGPIOx -> OTYPER &= ~(0x3 << (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber));
-	pGPIOHandle -> pGPIOx -> OTYPER |= temp;
-
-	temp  = 0;
-
-	// configure the alt functionality
-	if(pGPIOHandle -> GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN) {
-		uint8_t temp1, temp2;
-		
-		temp1 = pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber / 8;
-		temp2 = pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber % 8;
-		pGPIOHandle -> pGPIOx -> AFR[temp1] &= ~(0xF << (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber));
-		pGPIOHandle -> pGPIOx -> AFR[temp1] |= pGPIOHandle -> GPIO_PinConfig.GPIO_PinAltFunMode << (4 * temp2);
-	}
-	
+    pSPIHandle->pSPIx->CR1 = tempreg;
 }
 
 /*********************************************************************
@@ -148,17 +111,17 @@ void SPI_Init(SPI_Handle_t *pSPIHandle) {
 
 void SPI_DeInit(SPI_RegDef_t *pSPIx) {
 	
-	if(pGPIOx == GPIOA) {
-		GPIOA_REG_RESET();
+	if(pSPIx == SPI1) {
+		SPI1_REG_RESET();
 	}
-	else if (pGPIOx == GPIOB) {
-		GPIOB_REG_RESET();
+	else if (pSPIx == SPI2) {
+		SPI2_REG_RESET();
 	}
-	else if (pGPIOx == GPIOC) {
-		GPIOC_REG_RESET();
+	else if (pSPIx == SPI3) {
+		SPI3_REG_RESET();
 	}
-	else if (pGPIOx == GPIOH) {
-		GPIOH_REG_RESET();
+	else if (pSPIx == SPI5) {
+		SPI5_REG_RESET();
 	}
 }
 
@@ -281,8 +244,5 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority) {
  */
 
 void SPI_IRQHandler(SPI_Handle_t *pSPIHandle) {
-	//clear pending register corresponding to pin number
-	if(EXTI->PR & (1 << PinNumber)) {
-		EXTI->PR |= (1 << PinNumber);
-	}
+
 }

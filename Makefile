@@ -32,7 +32,10 @@ all: $(SRC_ELF)
 %.o: %.c 
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
-$(LIBSRC_O): $(LIBSRC)
+driver_gpio.o: driver_gpio.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
+
+driver_spi.o: driver_spi.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
 startup.o: startup.c
