@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "driver_gpio.h"
+#include "driver_spi.h"
 
 /*********************************************************************
  * @fn 			- SPI_PeriClkCtl
@@ -17,32 +17,32 @@
 
 void SPI_PeriClkCtl(SPI_RegDef_t *pSPIx, uint8_t ENorDI) {
 	if(ENorDI == ENABLE) {
-		if(pGPIOx == GPIOA) {
-			GPIOA_PCLK_EN();
+		if(pSPIx == SPI1) {
+			SPI1_PCLK_EN();
 		}
-		else if (pGPIOx == GPIOB) {
-			GPIOB_PCLK_EN();
+		else if (pSPIx == SPI2) {
+			SPI2_PCLK_EN();
 		}
-		else if (pGPIOx == GPIOC) {
-			GPIOC_PCLK_EN();
+		else if (pSPIx == SPI3) {
+			SPI3_PCLK_EN();
 		}
-		else if (pGPIOx == GPIOH) {
-			GPIOH_PCLK_EN();
+		else if (pSPIx == SPI5) {
+			SPI5_PCLK_EN();
 		}
 	}
 
 	else if(ENorDI == DISABLE) {
-		if(pGPIOx == GPIOA) {
-			GPIOA_PCLK_DI();
+		if(pSPIx == SPI1) {
+			SPI1_PCLK_DI();
 		}
-		else if(pGPIOx == GPIOB) {
-			GPIOB_PCLK_DI();
+		else if(pSPIx == SPI2) {
+			SPI2_PCLK_DI();
 		}
-		else if(pGPIOx == GPIOC) {
-			GPIOC_PCLK_DI();
+		else if(pSPIx == SPI3) {
+			SPI3_PCLK_DI();
 		}
-		else if(pGPIOx == GPIOH) {
-			GPIOH_PCLK_DI();
+		else if(pSPIx == SPI5) {
+			SPI5_PCLK_DI();
 		}
 		
 	}
