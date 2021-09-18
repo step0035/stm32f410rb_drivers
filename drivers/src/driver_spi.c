@@ -65,6 +65,9 @@ void SPI_PeriClkCtl(SPI_RegDef_t *pSPIx, uint8_t ENorDI) {
 void SPI_Init(SPI_Handle_t *pSPIHandle) {
 	uint32_t tempreg = 0;
 
+    // Enable peripheral clock
+    SPI_PeriClkCtl(pSPIHandle->pSPIx, ENABLE);
+
 	// configure device mode
     tempreg |= pSPIHandle->SPI_Config.SPI_DeviceMode << 2;
 
@@ -125,7 +128,7 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx) {
 	}
 }
 
-uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName) {
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName) {
     if (pSPIx->SR & FlagName)
         return FLAG_SET;
     else
@@ -166,6 +169,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len) {
             Len--;
             pTxBuffer++;
         }
+    }
 }
 
 /*********************************************************************
