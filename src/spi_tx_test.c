@@ -56,8 +56,9 @@ void SPI2_Init(void) {
 int main(void) {
     char user_data[] = "Hello world";
 
-    SPI2_GPIOInit();       // Init the gpio pins to behave as SPI2 pins
-    SPI2_Init();           // Init the SPI2 peripheral parameters
+    SPI2_GPIOInit();                        // Init the gpio pins to behave as SPI2 pins
+    SPI2_Init();                            // Init the SPI2 peripheral parameters
+    SPI2_PeripheralControl(SPI2, ENABLE);   // Enable SPI2 peripheral 
 
     SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
 

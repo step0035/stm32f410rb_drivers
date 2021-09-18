@@ -98,4 +98,5 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t ENorDI);
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void SPI_IRQHandler(SPI_Handle_t *pSPIHandle);
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t ENorDI);
 #endif
