@@ -5,6 +5,7 @@
 #ifndef STM32F410RB_H_
 #define STM32F410RB_H_
 
+#include <stddef.h>
 #include <stdint.h>
 
 /*
