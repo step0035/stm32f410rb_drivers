@@ -303,6 +303,18 @@ typedef struct {
 #define IRQ_NO_EXTI19		(62)
 #define IRQ_NO_EXTI20		(76)
 #define IRQ_NO_EXTI23		(97)
+#define IRQ_NO_SPI1         (35)
+#define IRQ_NO_SPI2         (36)
+#define IRQ_NO_SPI5         (85)
+#define IRQ_NO_USART1       (37)
+#define IRQ_NO_USART2       (38)
+#define IRQ_NO_USART6       (71)
+#define IRQ_NO_I2C1_EV      (31)
+#define IRQ_NO_I2C1_ER      (32)
+#define IRQ_NO_I2C2_EV      (33)
+#define IRQ_NO_I2C2_ER      (34)
+#define IRQ_NO_I2C4_EV      (95)
+#define IRQ_NO_I2C4_ER      (96)
 
 /*
  * IRQ Priority Levels

@@ -418,6 +418,31 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t ENorDI) {
 }
 
 /*********************************************************************
+ * @fn      		  - SPI_SSOEConfig
+ *
+ * @brief             -
+ *
+ * @param[in]         -
+ * @param[in]         -
+ * @param[in]         -
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+
+void  SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi) {
+	if(EnOrDi == ENABLE) {
+		pSPIx->CR2 |=  (1 << SPI_CR2_SSOE);
+	}
+    else {
+		pSPIx->CR2 &=  ~(1 << SPI_CR2_SSOE);
+	}
+
+
+}
+
+/*********************************************************************
  * @fn      		  - SPI_SendDataIT
  *
  * @brief             -
@@ -461,7 +486,7 @@ uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Le
  * @Note              -
  */
 
-uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len) {
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, volatile uint8_t *pRxBuffer, uint32_t Len) {
     if (pSPIHandle->RxState != SPI_BUSY_IN_RX) {
         // Save the RxBuffer address and Len information in some global variables
         pSPIHandle->pRxBuffer = pRxBuffer;
@@ -484,7 +509,7 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t
  *
  * @param[in]         -
  * @param[in]         -
- * @param[in]         -
+ e @param[in]         -
  *
  * @return            -
  *
