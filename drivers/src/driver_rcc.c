@@ -34,7 +34,7 @@ uint32_t RCC_GetPCLK1Value(void) {
 		SystemClk = RCC_GetPLLOutputClock();
 	}
 
-	// for ahb
+	// ahb
 	temp = ((RCC->CFGR >> 4 ) & 0xF);
 
 	if(temp < 8) {
@@ -44,7 +44,7 @@ uint32_t RCC_GetPCLK1Value(void) {
 		ahbp = AHB_PreScaler[temp-8];
 	}
 
-	//apb1
+	// apb1
 	temp = ((RCC->CFGR >> 10 ) & 0x7);
 
 	if(temp < 4) {

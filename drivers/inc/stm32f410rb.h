@@ -272,6 +272,10 @@ typedef struct {
 #define I2C2_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 22)))
 #define I2C4_PCLK_DI()		(RCC -> APB1ENR &= (~(1 << 24)))
 
+#define I2C1_REG_RESET()     do{ (RCC->APB1RSTR |= (1 << 21)); (RCC->APB2RSTR &= ~(1 << 21)); }while(0)
+#define I2C2_REG_RESET()     do{ (RCC->APB1RSTR |= (1 << 22)); (RCC->APB1RSTR &= ~(1 << 22)); }while(0)
+#define I2C4_REG_RESET()     do{ (RCC->APB1RSTR |= (1 << 24)); (RCC->APB1RSTR &= ~(1 << 24)); }while(0)
+
 /*
  * USART
  */
