@@ -486,7 +486,7 @@ uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Le
  * @Note              -
  */
 
-uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, volatile uint8_t *pRxBuffer, uint32_t Len) {
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len) {
     if (pSPIHandle->RxState != SPI_BUSY_IN_RX) {
         // Save the RxBuffer address and Len information in some global variables
         pSPIHandle->pRxBuffer = pRxBuffer;

@@ -9,7 +9,7 @@ SPI_Handle_t SPI2handle;
 #define MAX_LEN 500
 
 char RcvBuff[MAX_LEN];
-volatile unsigned char ReadByte;
+unsigned char ReadByte;
 volatile uint8_t rcvStop = 0;
 
 /*This flag will be set in the interrupt handler of the Arduino interrupt GPIO */

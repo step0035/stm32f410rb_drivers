@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "driver_i2c.h"
+#include "driver_rcc.h"
 
 /*
  * Private functions
@@ -60,16 +61,16 @@ void I2C_Init(I2C_Handle_t *pI2CHandle) {
     I2C_PeriClkCtl(pI2CHandle->pI2Cx, ENABLE);
 
     // ACK control bit
-    tempreg |= pI2CHandle->I2C_Config.I2C_AckControl << 10;
+    tempreg |= pI2CHandle->I2C_Config.I2C_ACKControl << 10;
     pI2CHandle->pI2Cx->CR1 = tempreg;
 
     // FREQ field of CR2
     tempreg = 0;
     tempreg = RCC_GetPCLK1Value() / 1000000U;
-    pI2C->pI2Cx->CR2 = tempreg & 0x3F; // 5 bits only
+    pI2CHandle->pI2Cx->CR2 = tempreg & 0x3F; // 5 bits only
 
     // Program device's own address
-    tempreg = 0
+    tempreg = 0;
     tempreg |= pI2CHandle->I2C_Config.I2C_DeviceAddress << 1;
     tempreg |= (1 << 14); // bit 14 must be set
 
@@ -131,8 +132,6 @@ void I2C_DeInit(I2C_RegDef_t *pI2Cx) {
         I2C1_REG_RESET();
     else if (pI2Cx == I2C2) 
         I2C2_REG_RESET();
-    else if (pI2Cx == I2C3) 
-        I2C3_REG_RESET();
     else if (pI2Cx == I2C4) 
         I2C4_REG_RESET();
 }

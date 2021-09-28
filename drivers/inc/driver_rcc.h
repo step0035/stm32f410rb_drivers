@@ -1,4 +1,4 @@
-#ifdef DRIVER_RCC_H_
+#ifndef DRIVER_RCC_H_
 #define DRIVER_RCC_H_
 
 #include "stm32f410rb.h"

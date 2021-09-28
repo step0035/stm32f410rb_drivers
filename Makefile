@@ -38,6 +38,12 @@ driver_gpio.o: driver_gpio.c
 driver_spi.o: driver_spi.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
 
+driver_i2c.o: driver_i2c.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
+
+driver_rcc.o: driver_rcc.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBINC)
+
 startup.o: startup.c
 	$(CC) $(CFLAGS) -o $@ $^
 
