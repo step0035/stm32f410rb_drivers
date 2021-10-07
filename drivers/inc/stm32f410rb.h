@@ -419,7 +419,6 @@ typedef struct {
 #define SPI_SR_BSY					 	7
 #define SPI_SR_FRE					 	8
 
-#endif
 
 /********************************************
  * Bit position definitions of I2C peripheral
@@ -483,3 +482,5 @@ typedef struct {
 #define I2C_CCR_CCR 					0
 #define I2C_CCR_DUTY 					14
 #define I2C_CCR_FS  				 	15
+
+#endif //STM32F410RB_H_
