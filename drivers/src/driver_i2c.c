@@ -30,10 +30,6 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t *pI2Cx) {
 	pI2Cx->CR1 |= ( 1 << I2C_CR1_START);
 }
 
-static void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx) {
-	pI2Cx->CR1 |= ( 1 << I2C_CR1_STOP);
-}
-
 static void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t *pI2Cx, uint8_t SlaveAddr) {
 	SlaveAddr = SlaveAddr << 1;
 	SlaveAddr &= ~(1); //SlaveAddr is Slave address + r/w bit=0
@@ -77,6 +73,24 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *pI2CHandle ) {
 		dummy_read = pI2CHandle->pI2Cx->SR2;
 		(void)dummy_read;
 	}
+}
+
+/*********************************************************************
+ * @fn                - I2C_GenerateStopCondition 
+ *
+ * @brief             - 
+ *
+ * @param[in]         - 
+ * @param[in]         - 
+ * @param[in]         -
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+ */
+
+void I2C_GenerateStopCondition(I2C_RegDef_t *pI2Cx) {
+	pI2Cx->CR1 |= ( 1 << I2C_CR1_STOP);
 }
 
 /*********************************************************************
@@ -246,4 +260,29 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle,uint8_t *pTxbuffer, uint32_t Le
 	//   Note: generating STOP, automatically clears the BTF
 	if(Sr == I2C_DISABLE_SR )
 		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
+}
+
+/*********************************************************************
+ * @fn                - I2C_ManageAcking
+ *
+ * @brief             -
+ *
+ * @param[in]         -
+ * @param[in]         -
+ * @param[in]         -
+ *
+ * @return            -
+ *
+ * @Note              -
+ */
+
+void I2C_ManageAcking(I2C_RegDef_t *pI2Cx, uint8_t EnorDi) {
+	if(EnorDi == I2C_ACK_ENABLE) {
+		//enable the ack
+		pI2Cx->CR1 |= ( 1 << I2C_CR1_ACK);
+	}
+    else {
+		//disable the ack
+		pI2Cx->CR1 &= ~( 1 << I2C_CR1_ACK);
+	}
 }
